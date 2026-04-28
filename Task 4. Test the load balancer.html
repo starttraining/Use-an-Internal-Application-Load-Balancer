@@ -1,0 +1,40 @@
+This step is crucial to confirm that your internal Application Load Balancer is correctly directing traffic to the backend services. It proves that other internal applications can now reliably reach your service through a single, stable IP address, ensuring continuous operation.
+
+To test the load balancer, you need to create a new VM instance in the same network as your internal Application Load Balancer. It's only accessible from within your private cloud network, not directly from Cloud Shell (which lives outside this specific network).
+
+In Cloud Shell, run the following gcloud command to create a simple test instance:
+gcloud compute instances create testinstance \
+--machine-type=e2-standard-2 --zone ZONE
+
+Then run the following command to SSH into it:
+gcloud compute ssh testinstance --zone ZONE
+
+If prompted, type Y and press Enter twice to proceed.
+
+Query the load balancer
+From inside the test instance, run the following curl commands to ask your internal Application Load Balancer's IP address if a few numbers are prime:
+curl IP/2
+
+curl IP/4
+
+curl IP/5
+
+The output shows True or False right next to your command line.
+
+Output:
+
+user@testinstance:~$ curl IP/2
+Trueuser@testinstance:~$ curl IP/4
+Falseuser@testinstance:~$ curl IP/5
+Trueuser@testinstance:~$ exit
+You should see that 2 and 5 are correctly identified as prime numbers, but 4 is not. This confirms that the internal Application Load Balancer is working! It received the requests and successfully forwarded them to one of your backend "prime calculation" VMs.
+
+The service responded correctly: that 2 and 5 are prime numbers, but 4 is not.
+
+Run the following command to leave the test instance:
+exit
+
+Then run the following command to delete it because it's not needed any more:
+gcloud compute instances delete testinstance --zone=ZONE
+
+Type in Y to confirm the deletion.

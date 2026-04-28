@@ -1,0 +1,26 @@
+A virtual environment keeps your project's software tidy and makes sure your code always runs with the specific versions of tools it needs.
+
+Python virtual environments are used to isolate package installation from the system.
+
+Install the virtualenv environment:
+sudo apt-get install -y virtualenv
+
+Build the virtual environment:
+python3 -m venv venv
+
+Activate the virtual environment:
+source venv/bin/activate
+
+Enable Gemini Code Assist in the Cloud Shell IDE
+You can use Gemini Code Assist in an integrated development environment (IDE) such as Cloud Shell to receive guidance on code or solve problems with your code. Before you can start using Gemini Code Assist, you need to enable it.
+
+In Cloud Shell, enable the Gemini for Google Cloud API with the following command:
+gcloud services enable cloudaicompanion.googleapis.com
+
+Click Open Editor on the Cloud Shell toolbar.
+Note: To open the Cloud Shell Editor, click Open Editor on the Cloud Shell toolbar. You can switch between Cloud Shell and the code Editor by clicking Open Editor or Open Terminal, as required.
+Click Cloud Code - No Project in the status bar at the bottom of the screen.
+
+Authorize the plugin if necessary. If a project is not automatically selected, click Select a Google Cloud Project, and choose Project ID.
+
+Verify that your Google Cloud project (Project ID) displays in the Cloud Code status message in the status bar.

@@ -1,0 +1,42 @@
+You're creating that single, private VIP entrance for your internal service. It allows other internal applications to reach your "prime number calculator" reliably, without needing to know which specific backend VM is active or available.
+
+In this task, you set up the Internal Load Balancer and connect it to the instance group you have just created.
+
+An Internal Load Balancer consists of three main parts:
+
+Forwarding Rule: This is the actual private IP address that other internal services send requests to. It "forwards" traffic to your backend service.
+Backend Service: This defines how the load balancer distributes traffic to your VM instances. It also includes the health check.
+Health Check: This is a continuous check that monitors the "health" of your backend VMs. The load balancer only sends traffic to machines that are passing their health checks, ensuring your service is always available.
+The following diagram shows how instances are load balanced using multiple instances in multiple backend groups in different zones.
+
+The load balancing diagram
+
+Create a health check
+A health check is needed to make sure the load balancer only sends traffic to healthy instances. Your backend service is an HTTP server, so run the following command to check if it responds with a "200 OK" on a specific URL path (in this case, /2 to check if 2 is prime):
+gcloud compute health-checks create http ilb-health --request-path /2
+
+Since the HTTP service is provided, see if a 200 response on a specific URL path (in this case /2 to check if 2 is prime) is populated.
+
+Create a backend service
+Now, run the following command to create the backend service named prime-service:
+gcloud compute backend-services create prime-service \
+--load-balancing-scheme internal --region=REGION \
+--protocol tcp --health-checks ilb-health
+
+This service ties the health check to the instance group.
+
+Add the instance group to the backend service
+Run the following command to connect your backend instance group to the prime-service backend service. This tells the load balancer which machines it should manage:
+gcloud compute backend-services add-backend prime-service \
+--instance-group backend --instance-group-zone=ZONE \
+--region=REGION
+
+Create the forwarding rule
+Finally, run the following command to create a forwarding rule named prime-lb with a static IP of IP:
+gcloud compute forwarding-rules create prime-lb \
+--load-balancing-scheme internal \
+--ports 80 --network default \
+--region=REGION --address IP \
+--backend-service prime-service
+
+Your internal "prime number calculation" service is now fully set up and ready to be queried via its internal IP address.
